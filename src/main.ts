@@ -1,3 +1,4 @@
+//Import the necessary modules and styles
 import "./style.css";
 
 import {
@@ -14,6 +15,9 @@ import {
   calculateExplosion,
   isPlayerHit,
 } from "./game/entity/Explosion";
+
+//Define the game state type
+type GameState = "playing" | "gameOver";
 
 const CELL_SIZE: number = 60;
 
@@ -49,7 +53,7 @@ let bomb: Bomb | null = null;
 let explosionPositions: Position[] = [];
 let explosionTimer: number = 0;
 
-let gameOver: boolean = false;
+let gameState: GameState = "playing";
 
 //Draw the board
 function drawBoard(): void {
@@ -147,7 +151,7 @@ function drawExplosion(): void {
 
 //Draw Game Over
 function drawGameOver(): void {
-  if (!gameOver) {
+  if (gameState !== "gameOver") {
     return;
   }
 
@@ -173,9 +177,7 @@ function draw(): void {
   drawExplosion();
   drawBoom();
   drawPlayer();
-  if (gameOver) {
-    drawGameOver();
-  }
+  drawGameOver();
 }
 
 draw();
@@ -184,7 +186,7 @@ let lastTime: number = performance.now();
 
 //Update the game Loop 
 function update(deltaTime: number): void {
-  if (gameOver) {
+  if (gameState === "gameOver") {
     return;
   }
 
@@ -196,8 +198,7 @@ function update(deltaTime: number): void {
 
       if (isPlayerHit(player, explosionPositions)) {
         player.die();
-        gameOver = true;
-        console.log("gameOver:", gameOver);
+        checkGameOver();
       }
 
       explosionTimer = 500;
@@ -234,31 +235,23 @@ requestAnimationFrame(gameLoop);
 window.addEventListener("keydown", (event: KeyboardEvent) => {
   switch (event.key) {
     case "ArrowUp":
-      if (!gameOver) {
-        player.move(-1, 0, board);
-      }
+      movePlayer(-1, 0);
       break;
 
     case "ArrowDown":
-      if (!gameOver) {
-        player.move(1, 0, board);
-      }
+      movePlayer(1, 0);
       break;
 
     case "ArrowLeft":
-      if (!gameOver) {
-        player.move(0, -1, board);
-      }
+      movePlayer(0, -1);
       break;
 
     case "ArrowRight":
-      if (!gameOver) {
-        player.move(0, 1, board);
-      }
+      movePlayer(0, 1);
       break;
 
     case " ":
-      if (gameOver) {
+      if (gameState === "gameOver") {
         restartGame();
         break;
       }
@@ -270,12 +263,30 @@ window.addEventListener("keydown", (event: KeyboardEvent) => {
   }
 });
 
-//Reset game
+//Reset all game states to restart the game
 function restartGame(): void {
-  gameOver = false;
+  gameState = "playing";
   player.reset();
   bomb = null;
   explosionPositions = [];
   explosionTimer = 0;
 }
 
+//Check if the player is dead and restart the game
+function checkGameOver(): void {
+  if (player.isDead()) {
+    gameState = "gameOver";
+  }
+}
+
+//Movement controls
+function movePlayer(
+  rowDirection: number,
+  colDirection: number
+): void {
+  if (gameState !== "playing") {
+    return;
+  }
+
+  player.move(rowDirection, colDirection, board);
+}
