@@ -1,4 +1,4 @@
-import type { Position } from "./Position";
+import type { Position } from "../Position";
 import { Board } from "./Board";
 import { Bomb } from "./Boom";
 import { Player } from "./Player";

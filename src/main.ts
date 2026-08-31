@@ -4,16 +4,16 @@ import {
   Board,
   ROWS,
   COLS,
-} from "./game/Board";
+} from "./game/entity/Board";
 
-import { Player } from "./game/Player";
+import { Player } from "./game/entity/Player";
 import type { Position } from "./game/Position";
-import { Bomb } from "./game/Boom";
+import { Bomb } from "./game/entity/Boom";
 
 import {
   calculateExplosion,
   isPlayerHit,
-} from "./game/Explosion";
+} from "./game/entity/Explosion";
 
 const CELL_SIZE: number = 60;
 
@@ -79,8 +79,6 @@ function drawBoard(): void {
 
 //Draw the player
 function drawPlayer(): void {
-  console.log("isDead:", typeof player.isDead);
-  
   if (player.isDead()) {
     return;
   }
@@ -184,38 +182,46 @@ draw();
 
 let lastTime: number = performance.now();
 
+//Update the game Loop 
+function update(deltaTime: number): void {
+  if (gameOver) {
+    return;
+  }
+
+  if (bomb !== null) {
+    const exploded: boolean = bomb.update(deltaTime);
+    
+    if (exploded) {
+      explosionPositions = calculateExplosion(bomb, board);
+
+      if (isPlayerHit(player, explosionPositions)) {
+        player.die();
+        gameOver = true;
+        console.log("gameOver:", gameOver);
+      }
+
+      explosionTimer = 500;
+
+      bomb = null;
+    }
+  }
+    
+  if (explosionPositions.length > 0) {
+    explosionTimer -= deltaTime;
+
+    if (explosionTimer <= 0) {
+      explosionPositions = [];
+    }
+  }
+  
+}
+
 function gameLoop(currentTime: number): void {
   const deltaTime: number = currentTime - lastTime;
 
   lastTime = currentTime;
 
-  if (!gameOver) {
-    if (bomb !== null) {
-      const exploded: boolean = bomb.update(deltaTime);
-      
-      if (exploded) {
-        explosionPositions = calculateExplosion(bomb, board);
-
-        if (isPlayerHit(player, explosionPositions)) {
-          player.die();
-          gameOver = true;
-          console.log("gameOver:", gameOver);
-        }
-
-        explosionTimer = 500;
-
-        bomb = null;
-      }
-    }
-      
-    if (explosionPositions.length > 0) {
-      explosionTimer -= deltaTime;
-
-      if (explosionTimer <= 0) {
-        explosionPositions = [];
-      }
-    }
-  }
+  update(deltaTime);
 
   draw();
 
@@ -272,3 +278,4 @@ function restartGame(): void {
   explosionPositions = [];
   explosionTimer = 0;
 }
+

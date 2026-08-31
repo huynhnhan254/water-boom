@@ -1,4 +1,4 @@
-import type { Position } from "./Position";
+import type { Position } from "../Position";
 
 export class Bomb {
   private position: Position;

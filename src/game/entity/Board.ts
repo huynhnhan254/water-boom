@@ -1,4 +1,4 @@
-import type { Position } from "./Position";
+import type { Position } from "../Position";
 
 export const ROWS: number = 9;
 export const COLS: number = 9;
