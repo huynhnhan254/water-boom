@@ -1,15 +1,15 @@
 import type { Position } from "../Position";
 import { Board } from "./Board";
-import { Bomb } from "./Boom";
+import { Boom } from "./Boom";
 import { Player } from "./Player";
 
 export function calculateExplosion(
-  bomb: Bomb,
+  boom: Boom,
   board: Board
 ): Position[] {
   const explosion: Position[] = [];
 
-  const center: Position = bomb.getPosition();
+  const center: Position = boom.getPosition();
 
   explosion.push(center);
 
@@ -21,7 +21,7 @@ export function calculateExplosion(
   ];
 
   for (const direction of directions) {
-    for (let distance = 1; distance <= bomb.getRadius(); distance++) {
+    for (let distance = 1; distance <= boom.getRadius(); distance++) {
       const position: Position = {
         row: center.row + direction.row * distance,
         col: center.col + direction.col * distance,

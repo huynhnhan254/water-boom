@@ -1,6 +1,6 @@
 import type { Position } from "../Position";
 
-export class Bomb {
+export class Boom {
   private position: Position;
   private timer: number;
   private radius: number;

@@ -9,7 +9,7 @@ import {
 
 import { Player } from "./game/entity/Player";
 import type { Position } from "./game/Position";
-import { Bomb } from "./game/entity/Boom";
+import { Boom } from "./game/entity/Boom";
 
 import {
   calculateExplosion,
@@ -48,7 +48,7 @@ const player: Player = new Player({
   col: 0,
 });
 
-let bomb: Bomb | null = null;
+let boom: Boom | null = null;
 
 let explosionPositions: Position[] = [];
 let explosionTimer: number = 0;
@@ -107,13 +107,13 @@ function drawPlayer(): void {
   ctx.fill();
 }
 
-//Draw the bomb
+//Draw the boom
 function drawBoom(): void {
-  if (bomb === null) {
+  if (boom === null) {
     return;
   }
 
-  const position: Position = bomb.getPosition();
+  const position: Position = boom.getPosition();
 
   const x: number =
     position.col * CELL_SIZE + CELL_SIZE / 2;
@@ -190,11 +190,11 @@ function update(deltaTime: number): void {
     return;
   }
 
-  if (bomb !== null) {
-    const exploded: boolean = bomb.update(deltaTime);
+  if (boom !== null) {
+    const exploded: boolean = boom.update(deltaTime);
     
     if (exploded) {
-      explosionPositions = calculateExplosion(bomb, board);
+      explosionPositions = calculateExplosion(boom, board);
 
       if (isPlayerHit(player, explosionPositions)) {
         player.die();
@@ -203,7 +203,7 @@ function update(deltaTime: number): void {
 
       explosionTimer = 500;
 
-      bomb = null;
+      boom = null;
     }
   }
     
@@ -256,9 +256,7 @@ window.addEventListener("keydown", (event: KeyboardEvent) => {
         break;
       }
 
-      if (!player.isDead() && bomb === null) {
-        bomb = new Bomb(player.getPosition());
-      }
+      placeBoom();
       break;
   }
 });
@@ -267,7 +265,7 @@ window.addEventListener("keydown", (event: KeyboardEvent) => {
 function restartGame(): void {
   gameState = "playing";
   player.reset();
-  bomb = null;
+  boom = null;
   explosionPositions = [];
   explosionTimer = 0;
 }
@@ -289,4 +287,15 @@ function movePlayer(
   }
 
   player.move(rowDirection, colDirection, board);
+}
+
+//place boom
+function placeBoom(): void {
+  if (gameState !== "playing") {
+    return;
+  }
+  
+  if (player.isDead() || boom === null) {
+    boom = new Boom(player.getPosition());
+  }
 }
