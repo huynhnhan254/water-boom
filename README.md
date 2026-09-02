@@ -25,7 +25,7 @@ npm install
 npm run dev
 
 ## Controls
-Arrow Keys — Move
-Space — Place Boom
-P — Pause / Resume
-Space — Restart after Game Over
+- Arrow Keys — Move
+- Space — Place Boom
+- P — Pause / Resume
+- Space — Restart after Game Over
