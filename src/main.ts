@@ -17,7 +17,7 @@ import {
 } from "./game/entity/Explosion";
 
 //Define the game state type
-type GameState = "playing" | "gameOver";
+type GameState = "playing" | "paused" |"gameOver";
 
 const CELL_SIZE: number = 60;
 
@@ -149,6 +149,21 @@ function drawExplosion(): void {
   }
 }
 
+//Draw the paused state
+function drawPaused(): void {
+  if (gameState !== "paused") {
+    return;
+  }
+  
+  ctx.font = "48px Arial";
+  ctx.textAlign = "center";
+  ctx.fillText(
+    "PAUSED",
+    canvas.width / 2,
+    canvas.height / 2
+  );
+}
+
 //Draw Game Over
 function drawGameOver(): void {
   if (gameState !== "gameOver") {
@@ -177,6 +192,7 @@ function draw(): void {
   drawExplosion();
   drawBoom();
   drawPlayer();
+  drawPaused();
   drawGameOver();
 }
 
@@ -186,7 +202,7 @@ let lastTime: number = performance.now();
 
 //Update the game Loop 
 function update(deltaTime: number): void {
-  if (gameState === "gameOver") {
+  if (gameState !== "playing") {
     return;
   }
 
@@ -257,6 +273,14 @@ window.addEventListener("keydown", (event: KeyboardEvent) => {
       }
 
       placeBoom();
+      break;
+
+    case "p":
+      if (gameState === "playing") {
+        gameState = "paused";
+      } else if (gameState === "paused") {
+        gameState = "playing";
+      }
       break;
   }
 });
