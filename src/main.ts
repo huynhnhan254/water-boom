@@ -154,7 +154,19 @@ function drawPaused(): void {
   if (gameState !== "paused") {
     return;
   }
+
   
+  ctx.globalAlpha = 0.5;
+
+  ctx.fillRect(
+    0,
+    0,
+    canvas.width,
+    canvas.height
+  );
+
+  ctx.globalAlpha = 1;
+
   ctx.font = "48px Arial";
   ctx.textAlign = "center";
   ctx.fillText(
