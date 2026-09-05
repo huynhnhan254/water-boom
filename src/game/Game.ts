@@ -165,13 +165,7 @@ export class Game {
             }   
         }
 
-        if (this.explosionPositions.length > 0) {
-            this.explosionTimer -= deltaTime;
-
-            if (this.explosionTimer <= 0) {
-            this.explosionPositions = [];
-            }
-        }
+        this.updateExplosion(deltaTime);
 
         return explosion;
     }
@@ -219,4 +213,24 @@ export class Game {
             this.gameState = "playing";
         }
     }
+
+    private updateExplosion(deltaTime : number): void {
+        if (this.explosionTimer === 0) {
+            return;
+        }
+
+        this.explosionTimer -= deltaTime;
+
+        if (this.explosionTimer <= 0) {
+            this.explosionPositions = [];
+        }
+    }
+
+    public update(deltaTime: number): void {
+    if (this.getGameState() !== "playing") {
+      return;
+    }
+
+    this.updateBoom(deltaTime);
+  }
 }

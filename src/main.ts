@@ -107,10 +107,6 @@ let lastTime: number = performance.now();
 
 //Update the game Loop 
 function update(deltaTime: number): void {
-  if (game.getGameState() !== "playing") {
-    return;
-  }
-
   game.updateBoom(deltaTime);
 }
 
