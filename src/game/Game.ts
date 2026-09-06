@@ -165,8 +165,6 @@ export class Game {
             }   
         }
 
-        this.updateExplosion(deltaTime);
-
         return explosion;
     }
 
@@ -227,10 +225,10 @@ export class Game {
     }
 
     public update(deltaTime: number): void {
-    if (this.getGameState() !== "playing") {
-      return;
+    if (this.getGameState() === "playing") {
+      this.updateBoom(deltaTime);
     }
 
-    this.updateBoom(deltaTime);
+    this.updateExplosion(deltaTime);
   }
 }

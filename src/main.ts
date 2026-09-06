@@ -107,7 +107,7 @@ let lastTime: number = performance.now();
 
 //Update the game Loop 
 function update(deltaTime: number): void {
-  game.updateBoom(deltaTime);
+  game.update(deltaTime);
 }
 
 function gameLoop(currentTime: number): void {
